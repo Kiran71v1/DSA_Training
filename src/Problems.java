@@ -32,6 +32,15 @@ public class Problems {
 
         String number = "-123";
         System.out.println(converToNumber(number));
+
+        int[] a = {1,2,3,4,5};
+        int[] b = {1,9,10,11,12,13,14,15,16,17,18};
+        System.out.println(findMedian(a,b));
+
+        int[] bishopPos = {0, 0};
+        int[] immovablePos = {1, 2};
+
+        System.out.println( canReachBishop(bishopPos, immovablePos));
     }
 
 
@@ -229,5 +238,112 @@ public class Problems {
         if (k == 1)
             n = -n;
         return n;
+    }
+
+
+    public static double findMedian(int[] a,int[] b){
+
+        int n1 = a.length;
+        int n2 = b.length;
+        if(n1>n2) return findMedian(b,a);
+        int n = n1+n2;
+        int median = (n+1)/2;
+        int start=0;
+        int end = n1;
+
+        while(start<=end){
+            int median1 = (start+end)/2;
+            int median2 = median-median1;
+
+            int l1 = Integer.MIN_VALUE;
+            int r1 = Integer.MAX_VALUE;
+            int l2 = Integer.MIN_VALUE;
+            int r2 = Integer.MAX_VALUE;
+
+            if(median1>0) l1 = a[median1-1];
+            if(median1<n1) r1 = a[median1];
+            if(median2>0) l2 = b[median2-1];
+            if(median2<n2) r2 = b[median2];
+
+            if(l1<=r2 && l2<=r1){
+                if((n%2 == 0)){
+                    double sol = (Math.min(r1,r2)+Math.max(l1,l2))/2.0;
+                    return sol;
+                }
+                return Math.max(l1,l2);
+            }
+            else if(l1>r2){
+                end = median1-1;
+            }
+            else{
+                start = median1+1;
+            }
+        }
+        return 0.0;
+    }
+    private static double findMedian1(int[] a, int[] b) {
+        int n1 = a.length;
+        int n2 = b.length;
+        int n = n1+n2;
+        int mid2 = n/2;
+        int mid1 = mid2-1;
+        int mid1val = -1;
+        int mid2val = -1;
+        int i = 0,j = 0,k = 0;
+        while(i<n1 && j<n2){
+            if(a[i]<b[j]){
+                if(k == mid1) mid1val = a[i];
+                else if(k == mid2) mid2val = a[i];
+                k++;
+                i++;
+            }
+            else{
+                if(k == mid1) mid1val = b[j];
+                else if(k == mid2) mid2val = b[j];
+                k++;
+                j++;
+            }
+            if(mid1val != -1 && mid2val != -1)
+                break;
+        }
+        while(i<n1){
+            if(k == mid1) mid1val = a[i];
+            else if(k == mid2) mid2val = a[i];
+            k++;
+            i++;
+            if(mid1val != -1 && mid2val != -1)
+                break;
+        }
+        while(j<n2){
+            if(k == mid1) mid1val = b[j];
+            else if(k == mid2) mid2val = b[j];
+            k++;
+            j++;
+            if(mid1val != -1 && mid2val != -1)
+                break;
+        }
+        if(n%2 == 0){
+            return (mid1val+mid2val)/2.0;
+        }
+        return (double)mid2val;
+    }
+    public static String canReachBishop(int[] bishopPos, int[] immovablePos) {
+        int x1 = bishopPos[0];
+        int y1 = bishopPos[1];
+        int x2 = immovablePos[0];
+        int y2 = immovablePos[1];
+
+        if (x1 == x2 && y1 == y2) {
+            return "YES, 0";
+        }
+
+        if ((x1 + y1) % 2 != (x2 + y2) % 2) {
+            return "NO";
+        }
+
+        if (Math.abs(x1 - x2) == Math.abs(y1 - y2)) {
+            return "YES, 1";
+        }
+        return "YES, 2";
     }
 }
